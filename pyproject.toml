@@ -1,0 +1,11 @@
+[project]
+name = "demoqa"
+version = "0.1.0"
+dependencies = [
+    "selenium",
+    "pytest",
+    "webdriver-manager",
+]
+
+[tool.pytest.ini_options]
+pythonpath = "pages"
