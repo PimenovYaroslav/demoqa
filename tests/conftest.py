@@ -5,7 +5,7 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium import webdriver
 from faker import Faker
-
+import os
 from pages.broken_links_page import BrokenLinksPage
 from pages.buttons_page import ButtonsPage
 from pages.check_box_page import CheckBoxPage
@@ -14,6 +14,7 @@ from pages.home_page import HomePage
 from pages.links_page import LinksPage
 from pages.radio_button_page import RadioButtonPage
 from pages.text_box_page import TextBoxPage
+from pages.upload_download_page import UploadDownloadPage
 from pages.web_tables_page import WebTablesPage
 
 
@@ -26,15 +27,28 @@ def config():
 
 @pytest.fixture(scope="function")
 def driver(config):
+    # Get the project's root directory
+    project_root = os.getcwd()
+    download_dir = os.path.join(project_root, "downloads")
+
+    # Ensure the download directory exists
+    if not os.path.exists(download_dir):
+        os.makedirs(download_dir)
+
     base_url = config["DEMOQA"]["BASE_URL"]
     chrome_options = Options()
     chrome_options.add_argument("--start-maximized")
-    service = ChromeService(ChromeDriverManager().install())
+
+    # Configure Chrome to automatically save downloads to the specified directory
+    prefs = {"download.default_directory": download_dir,
+             "download.prompt_for_download": False}  # Prevents download dialog pop-up
+    chrome_options.add_experimental_option("prefs", prefs)
 
     try:
         service = ChromeService(ChromeDriverManager().install())
     except Exception as e:
         pytest.fail(f"Failed to install ChromeDriver: {e}")
+
     driver = webdriver.Chrome(service=service, options=chrome_options)
     driver.get(base_url)
 
@@ -131,7 +145,7 @@ def links_page(driver, config):
     return links_page
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def broken_links_page(driver, config):
     """
     Fixture that returns a BrokenLinksPage object and navigates to its URL.
@@ -140,6 +154,18 @@ def broken_links_page(driver, config):
     base_url = config['DEMOQA']['BASE_URL']
     broken_links_page.open_url(f"{base_url}/{config['DEMOQA']['BROKEN_LINKS_URL']}")
     return broken_links_page
+
+
+@pytest.fixture(scope="function")
+def upload_download_page(driver, config):
+    """
+    Fixture that returns an UploadDownloadPage object and navigates to its URL.
+    """
+
+    upload_download_page = UploadDownloadPage(driver)
+    base_url = config['DEMOQA']['BASE_URL']
+    upload_download_page.open_url(f"{base_url}/{config['DEMOQA']['UPLOAD_DOWNLOAD_URL']}")
+    return upload_download_page
 
 
 @pytest.fixture(scope="function")
