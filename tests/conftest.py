@@ -6,6 +6,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium import webdriver
 from faker import Faker
 
+from pages.broken_links_page import BrokenLinksPage
 from pages.buttons_page import ButtonsPage
 from pages.check_box_page import CheckBoxPage
 from pages.elements_page import ElementsPage
@@ -128,6 +129,17 @@ def links_page(driver, config):
     base_url = config['DEMOQA']['BASE_URL']
     links_page.open_url(f"{base_url}/{config['DEMOQA']['LINKS_URL']}")
     return links_page
+
+
+@pytest.fixture
+def broken_links_page(driver, config):
+    """
+    Fixture that returns a BrokenLinksPage object and navigates to its URL.
+    """
+    broken_links_page = BrokenLinksPage(driver)
+    base_url = config['DEMOQA']['BASE_URL']
+    broken_links_page.open_url(f"{base_url}/{config['DEMOQA']['BROKEN_LINKS_URL']}")
+    return broken_links_page
 
 
 @pytest.fixture(scope="function")
