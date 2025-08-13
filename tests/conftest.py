@@ -9,6 +9,7 @@ from faker import Faker
 from pages.check_box_page import CheckBoxPage
 from pages.elements_page import ElementsPage
 from pages.home_page import HomePage
+from pages.radio_button_page import RadioButtonPage
 from pages.text_box_page import TextBoxPage
 
 
@@ -80,6 +81,17 @@ def check_box_page(driver, config) -> CheckBoxPage:
     base_url = config['DEMOQA']['BASE_URL']
     check_box_page.open_url(f"{base_url}/{config['DEMOQA']['CHECKBOX_URL']}")
     return check_box_page
+
+
+@pytest.fixture(scope="function")
+def radio_button_page(driver, config) -> RadioButtonPage:
+    """
+    Fixture that returns a RadioButtonPage object and navigates to its URL.
+    """
+    radio_button_page = RadioButtonPage(driver)
+    base_url = config['DEMOQA']['BASE_URL']
+    radio_button_page.open_url(f"{base_url}/{config['DEMOQA']['RADIO_BUTTON_URL']}")
+    return radio_button_page
 
 
 @pytest.fixture(scope="function")
