@@ -10,6 +10,7 @@ from pages.buttons_page import ButtonsPage
 from pages.check_box_page import CheckBoxPage
 from pages.elements_page import ElementsPage
 from pages.home_page import HomePage
+from pages.links_page import LinksPage
 from pages.radio_button_page import RadioButtonPage
 from pages.text_box_page import TextBoxPage
 from pages.web_tables_page import WebTablesPage
@@ -116,6 +117,17 @@ def buttons_page(driver, config):
     base_url = config['DEMOQA']['BASE_URL']
     buttons_page.open_url(f"{base_url}/{config['DEMOQA']['BUTTONS_URL']}")
     return buttons_page
+
+
+@pytest.fixture(scope="function")
+def links_page(driver, config):
+    """
+    Fixture that returns a LinksPage object and navigates to its URL.
+    """
+    links_page = LinksPage(driver)
+    base_url = config['DEMOQA']['BASE_URL']
+    links_page.open_url(f"{base_url}/{config['DEMOQA']['LINKS_URL']}")
+    return links_page
 
 
 @pytest.fixture(scope="function")
