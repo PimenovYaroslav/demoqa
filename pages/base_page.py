@@ -2,7 +2,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.remote.webelement import WebElement
-from typing import Tuple
+from typing import Tuple, List
 
 
 class BasePage:
@@ -43,6 +43,18 @@ class BasePage:
         except TimeoutException:
             raise TimeoutException(f"Element with locator {locator} not found or is not visible.")
 
+    def find_elements(self, locator: Tuple[str, str]) -> List[WebElement]:
+        """
+        Finds and returns a list of visible elements using an explicit wait.
+        :param locator: A tuple containing the strategy and the locator value.
+        :return: A list of WebElement objects if found and visible.
+        :raises TimeoutException: If no elements are found within the specified time.
+        """
+        try:
+            return self.wait.until(EC.visibility_of_all_elements_located(locator))
+        except TimeoutException:
+            raise TimeoutException(f"Elements with locator {locator} not found or are not visible.")
+
     def click(self, locator: Tuple[str, str]):
         """
         Finds and clicks on an element only after it becomes clickable and scrolled into view.
@@ -54,6 +66,18 @@ class BasePage:
             element.click()
         except TimeoutException:
             raise TimeoutException(f"Element with locator {locator} was not clickable within the specified time.")
+
+    def type_into_element(self, locator: Tuple[str, str], text: str):
+        """
+           Finds an element, scrolls it into view, and sends text to it.
+           :param locator: A tuple containing the strategy and the locator value.
+           :param text: The text to send to the element.
+           """
+        element = self.find_element(locator)
+        self.driver.execute_script("arguments[0].scrollIntoView(true);", element)
+        element.click()
+        element.clear()
+        element.send_keys(text)
 
     def is_element_visible(self, locator: Tuple[str, str]) -> bool:
         """

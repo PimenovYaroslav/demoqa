@@ -5,6 +5,7 @@ dependencies = [
     "selenium",
     "pytest",
     "webdriver-manager",
+    "faker"
 ]
 
 [tool.pytest.ini_options]
