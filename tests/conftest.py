@@ -6,6 +6,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium import webdriver
 from faker import Faker
 
+from pages.buttons_page import ButtonsPage
 from pages.check_box_page import CheckBoxPage
 from pages.elements_page import ElementsPage
 from pages.home_page import HomePage
@@ -104,6 +105,17 @@ def web_tables_page(driver, config) -> WebTablesPage:
     base_url = config['DEMOQA']['BASE_URL']
     web_tables_page.open_url(f"{base_url}/{config['DEMOQA']['WEBTABLES_URL']}")
     return web_tables_page
+
+
+@pytest.fixture(scope="function")
+def buttons_page(driver, config):
+    """
+    Fixture that returns a ButtonsPage object and navigates to its URL.
+    """
+    buttons_page = ButtonsPage(driver)
+    base_url = config['DEMOQA']['BASE_URL']
+    buttons_page.open_url(f"{base_url}/{config['DEMOQA']['BUTTONS_URL']}")
+    return buttons_page
 
 
 @pytest.fixture(scope="function")
