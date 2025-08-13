@@ -11,6 +11,7 @@ from pages.elements_page import ElementsPage
 from pages.home_page import HomePage
 from pages.radio_button_page import RadioButtonPage
 from pages.text_box_page import TextBoxPage
+from pages.web_tables_page import WebTablesPage
 
 
 @pytest.fixture(scope="session")
@@ -95,6 +96,17 @@ def radio_button_page(driver, config) -> RadioButtonPage:
 
 
 @pytest.fixture(scope="function")
+def web_tables_page(driver, config) -> WebTablesPage:
+    """
+    Fixture that returns a WebTablesPage object and navigates to its URL.
+    """
+    web_tables_page = WebTablesPage(driver)
+    base_url = config['DEMOQA']['BASE_URL']
+    web_tables_page.open_url(f"{base_url}/{config['DEMOQA']['WEBTABLES_URL']}")
+    return web_tables_page
+
+
+@pytest.fixture(scope="function")
 def test_data():
     """
     Fixture that generates fake data using the Faker library.
@@ -106,4 +118,20 @@ def test_data():
         "email": fake.email(),
         "current_address": fake.address(),
         "permanent_address": fake.address()
+    }
+
+
+@pytest.fixture(scope="function")
+def web_tables_test_data():
+    """
+    Fixture that generates fake data using the Faker library for the Web Tables tests.
+    """
+    fake = Faker()
+    return {
+        "first_name": fake.first_name(),
+        "last_name": fake.last_name(),
+        "email": fake.email(),
+        "age": str(fake.random_int(min=18, max=65)),
+        "salary": str(fake.random_int(min=30000, max=150000)),
+        "department": fake.job()
     }
