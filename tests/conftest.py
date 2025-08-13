@@ -9,6 +9,7 @@ import os
 from pages.broken_links_page import BrokenLinksPage
 from pages.buttons_page import ButtonsPage
 from pages.check_box_page import CheckBoxPage
+from pages.dynamic_properties_page import DynamicPropertiesPage
 from pages.elements_page import ElementsPage
 from pages.home_page import HomePage
 from pages.links_page import LinksPage
@@ -166,6 +167,17 @@ def upload_download_page(driver, config):
     base_url = config['DEMOQA']['BASE_URL']
     upload_download_page.open_url(f"{base_url}/{config['DEMOQA']['UPLOAD_DOWNLOAD_URL']}")
     return upload_download_page
+
+
+@pytest.fixture(scope="function")
+def dynamic_properties_page(driver, config):
+    """
+    Fixture that returns a DynamicPropertiesPage object and navigates to its URL.
+    """
+    dynamic_properties_page = DynamicPropertiesPage(driver)
+    base_url = config['DEMOQA']['BASE_URL']
+    dynamic_properties_page.open_url(f"{base_url}/{config['DEMOQA']['DYNAMIC_PROPERTIES_URL']}")
+    return dynamic_properties_page
 
 
 @pytest.fixture(scope="function")
