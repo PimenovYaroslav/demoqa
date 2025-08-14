@@ -5,6 +5,7 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium import webdriver
 from faker import Faker
+import random
 import os
 from pages.broken_links_page import BrokenLinksPage
 from pages.buttons_page import ButtonsPage
@@ -17,6 +18,7 @@ from pages.radio_button_page import RadioButtonPage
 from pages.text_box_page import TextBoxPage
 from pages.upload_download_page import UploadDownloadPage
 from pages.web_tables_page import WebTablesPage
+from pages.practice_form_page import PracticeFormPage
 
 
 @pytest.fixture(scope="session")
@@ -162,7 +164,6 @@ def upload_download_page(driver, config):
     """
     Fixture that returns an UploadDownloadPage object and navigates to its URL.
     """
-
     upload_download_page = UploadDownloadPage(driver)
     base_url = config['DEMOQA']['BASE_URL']
     upload_download_page.open_url(f"{base_url}/{config['DEMOQA']['UPLOAD_DOWNLOAD_URL']}")
@@ -178,6 +179,17 @@ def dynamic_properties_page(driver, config):
     base_url = config['DEMOQA']['BASE_URL']
     dynamic_properties_page.open_url(f"{base_url}/{config['DEMOQA']['DYNAMIC_PROPERTIES_URL']}")
     return dynamic_properties_page
+
+
+@pytest.fixture(scope="function")
+def practice_form_page(driver, config):  # Added new fixture
+    """
+    Fixture that returns a PracticeFormPage object and navigates to its URL.
+    """
+    practice_form_page = PracticeFormPage(driver)
+    base_url = config['DEMOQA']['BASE_URL']
+    practice_form_page.open_url(f"{base_url}/{config['DEMOQA']['PRACTICE_FORM_URL']}")
+    return practice_form_page
 
 
 @pytest.fixture(scope="function")
@@ -208,4 +220,57 @@ def web_tables_test_data():
         "age": str(fake.random_int(min=18, max=65)),
         "salary": str(fake.random_int(min=30000, max=150000)),
         "department": fake.job()
+    }
+
+
+@pytest.fixture(scope="function")
+def generated_form_data():
+    """
+    Generates a dictionary of random test data using the Faker library.
+    This fixture ensures a new set of data for each test run.
+    """
+    fake = Faker()
+    # A list of possible subjects and hobbies to choose from
+    subjects_list = ["Maths", "Computer Science", "Physics", "English", "History", "Chemistry", "Social Studies"]
+    hobbies_list = ["Sports", "Reading", "Music"]
+
+    # A dictionary to map states to cities for dynamic selection
+    state_city_mapping = {
+        "NCR": ["Delhi", "Gurgaon", "Noida"],
+        "Uttar Pradesh": ["Agra", "Lucknow", "Merrut"],
+        "Haryana": ["Karnal", "Panipat"],
+        "Rajasthan": ["Jaipur", "Jaiselmer"]
+    }
+
+    # Randomly select a state and a corresponding city
+    random_state = random.choice(list(state_city_mapping.keys()))
+    random_city = random.choice(state_city_mapping[random_state])
+
+    # Randomly select a few items for subjects and hobbies
+    num_subjects = random.randint(1, 3)
+    selected_subjects = random.sample(subjects_list, num_subjects)
+    selected_hobbies = random.sample(hobbies_list, random.randint(1, len(hobbies_list)))
+    selected_hobbies.sort()
+
+    file_path = os.path.join(os.path.dirname(__file__), '..', 'sample_picture.png')
+    file_to_upload = file_path if os.path.exists(file_path) else None
+    if not file_to_upload:
+        print(f"\nWarning: The file '{file_path}' does not exist. Skipping picture upload.")
+
+    return {
+        "first_name": fake.first_name(),
+        "last_name": fake.last_name(),
+        "email": fake.email(),
+        "gender": random.choice(["Male", "Female", "Other"]),
+        "mobile_number": fake.numerify("##########"),  # Generates a 10-digit number
+        "day_of_birth": str(random.randint(10, 28)),
+        "month_of_birth": random.choice(["January", "February", "March", "April", "May", "June",
+                                         "July", "August", "September", "October", "November", "December"]),
+        "year_of_birth": str(random.randint(1950, 2000)),
+        "subjects": selected_subjects,
+        "hobbies": selected_hobbies,
+        "address": fake.address().replace("\n", " "),  # Removes newlines for the input field
+        "state": random_state,
+        "city": random_city,
+        "file_to_upload": file_to_upload
     }

@@ -3,6 +3,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.remote.webelement import WebElement
 from typing import Tuple, List
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.keys import Keys
 
 
 class BasePage:
@@ -67,17 +69,59 @@ class BasePage:
         except TimeoutException:
             raise TimeoutException(f"Element with locator {locator} was not clickable within the specified time.")
 
-    def type_into_element(self, locator: Tuple[str, str], text: str):
+    def js_click(self, locator: Tuple[str, str]):
         """
-           Finds an element, scrolls it into view, and sends text to it.
-           :param locator: A tuple containing the strategy and the locator value.
-           :param text: The text to send to the element.
-           """
-        element = self.find_element(locator)
-        self.driver.execute_script("arguments[0].scrollIntoView(true);", element)
-        element.click()
-        element.clear()
-        element.send_keys(text)
+        Finds and clicks on an element using JavaScript.
+        Use this method as a fallback when ElementClickInterceptedException occurs.
+        :param locator: A tuple containing the strategy and the locator value.
+        """
+        try:
+            element = self.wait.until(EC.presence_of_element_located(locator))
+            self.driver.execute_script("arguments[0].scrollIntoView(true);", element)
+            self.driver.execute_script("arguments[0].click();", element)
+        except TimeoutException:
+            raise TimeoutException(f"Element with locator {locator} was not found within the specified time.")
+
+    def scroll_to_element(self, locator: Tuple[str, str]):
+        """
+        Scrolls the element into the viewport using JavaScript.
+        :param locator: A tuple containing the strategy and the locator value.
+        """
+        try:
+            element = self.wait.until(EC.presence_of_element_located(locator))
+            self.driver.execute_script("arguments[0].scrollIntoView(true);", element)
+        except TimeoutException:
+            raise TimeoutException(f"Element with locator {locator} was not found within the specified time.")
+
+    def type_into_element(self, locator: Tuple[str, str], text: str, press_enter: bool = False):
+        """
+        Types text into an element after ensuring it is visible and enabled.
+        Optionally presses Enter after typing.
+        :param locator: A tuple containing the strategy and the locator value.
+        :param text: The text to be entered.
+        :param press_enter: If True, presses Enter after typing.
+        """
+        self.scroll_to_element(locator)
+        try:
+            element = self.wait.until(EC.visibility_of_element_located(locator))
+            element.clear()
+            element.send_keys(text)
+            if press_enter:
+                element.send_keys(Keys.ENTER)
+        except TimeoutException:
+            raise TimeoutException(f"Element with locator {locator} was not visible within the specified time.")
+
+    def send_keys_to_hidden_element(self, locator: Tuple[str, str], file_path: str):
+        """
+        Sends the file path to a hidden input element. This method is ideal
+        for file uploads, as `<input type='file'>` elements are often
+        hidden on the page.
+        """
+        try:
+            element = self.wait.until(EC.presence_of_element_located(locator))
+            element.send_keys(file_path)
+        except TimeoutException:
+            raise TimeoutException(f"Element with locator {locator} was not found within the specified time.")
 
     def is_element_visible(self, locator: Tuple[str, str]) -> bool:
         """
@@ -99,3 +143,27 @@ class BasePage:
         :return: The text of the element.
         """
         return self.find_element(locator).text
+
+    def select_from_dropdown(self, locator: Tuple[str, str], value: str, by_type: str = "text"):
+        """
+        Selects an option from a <select> dropdown element.
+
+        Args:
+            locator: A tuple containing (By.strategy, "locator_value") for the dropdown element.
+            value: The value to select.
+            by_type: The selection method ("text", "value", or "index"). Defaults to "text".
+
+        Raises:
+            ValueError: If the provided by_type is not supported.
+        """
+        dropdown_element = self.find_element(locator)
+        select = Select(dropdown_element)
+
+        if by_type == "text":
+            select.select_by_visible_text(value)
+        elif by_type == "value":
+            select.select_by_value(value)
+        elif by_type == "index":
+            select.select_by_index(int(value))
+        else:
+            raise ValueError(f"Invalid selection type: '{by_type}'. Supported values are 'text', 'value', 'index'.")
