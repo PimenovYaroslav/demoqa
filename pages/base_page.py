@@ -167,3 +167,37 @@ class BasePage:
             select.select_by_index(int(value))
         else:
             raise ValueError(f"Invalid selection type: '{by_type}'. Supported values are 'text', 'value', 'index'.")
+
+    def get_current_window_handle(self):
+        """
+        Returns the handle of the current browser window.
+        """
+        return self.driver.current_window_handle
+
+    def get_all_window_handles(self):
+        """
+        Returns a list of all available window handles.
+        """
+        return self.driver.window_handles
+
+    def switch_to_window(self, window_handle):
+        """
+        Switches the WebDriver's focus to a specified window.
+
+        Args:
+            window_handle: The handle of the window to switch to.
+        """
+        self.driver.switch_to.window(window_handle)
+
+    def close_current_window(self):
+        """
+        Closes the current browser window or tab.
+        """
+        self.driver.close()
+
+    def get_current_url(self):
+        """
+        Returns the URL of the current page.
+        """
+        return self.driver.current_url
+

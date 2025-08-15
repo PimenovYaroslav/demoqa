@@ -8,6 +8,7 @@ from faker import Faker
 import random
 import os
 from pages.broken_links_page import BrokenLinksPage
+from pages.browser_windows_page import BrowserWindowsPage
 from pages.buttons_page import ButtonsPage
 from pages.check_box_page import CheckBoxPage
 from pages.dynamic_properties_page import DynamicPropertiesPage
@@ -190,6 +191,17 @@ def practice_form_page(driver, config):  # Added new fixture
     base_url = config['DEMOQA']['BASE_URL']
     practice_form_page.open_url(f"{base_url}/{config['DEMOQA']['PRACTICE_FORM_URL']}")
     return practice_form_page
+
+
+@pytest.fixture(scope="function")
+def browser_windows_page(driver, config):
+    """
+    Fixture that returns a BrowserWindowsPage object and navigates to its URL.
+    """
+    browser_windows_page = BrowserWindowsPage(driver)
+    base_url = config['DEMOQA']['BASE_URL']
+    browser_windows_page.open_url(f"{base_url}/{config['DEMOQA']['BROWSER_WINDOWS_URL']}")
+    return browser_windows_page
 
 
 @pytest.fixture(scope="function")
