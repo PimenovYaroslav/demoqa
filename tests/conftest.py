@@ -18,6 +18,7 @@ from pages.elements_page import ElementsPage
 from pages.frames_page import FramesPage
 from pages.home_page import HomePage
 from pages.links_page import LinksPage
+from pages.modal_dialogs_page import ModalDialogsPage
 from pages.nested_frames_page import NestedFramesPage
 from pages.radio_button_page import RadioButtonPage
 from pages.text_box_page import TextBoxPage
@@ -239,6 +240,17 @@ def nested_frames_page(driver, config):
     base_url = config['DEMOQA']['BASE_URL']
     nested_frames_page.open_url(f"{base_url}/{config['DEMOQA']['NESTED_FRAMES_URL']}")
     return nested_frames_page
+
+
+@pytest.fixture(scope="function")
+def modal_dialogs_page(driver, config):
+    """
+    Fixture that returns a FramesPage object and navigates to its URL.
+    """
+    modal_dialogs_page = ModalDialogsPage(driver)
+    base_url = config['DEMOQA']['BASE_URL']
+    modal_dialogs_page.open_url(f"{base_url}/{config['DEMOQA']['MODAL_DIALOGS_URL']}")
+    return modal_dialogs_page
 
 
 @pytest.fixture(scope="function")
