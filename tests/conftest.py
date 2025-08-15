@@ -15,8 +15,10 @@ from pages.buttons_page import ButtonsPage
 from pages.check_box_page import CheckBoxPage
 from pages.dynamic_properties_page import DynamicPropertiesPage
 from pages.elements_page import ElementsPage
+from pages.frames_page import FramesPage
 from pages.home_page import HomePage
 from pages.links_page import LinksPage
+from pages.nested_frames_page import NestedFramesPage
 from pages.radio_button_page import RadioButtonPage
 from pages.text_box_page import TextBoxPage
 from pages.upload_download_page import UploadDownloadPage
@@ -215,6 +217,28 @@ def alerts_page(driver, config):
     base_url = config['DEMOQA']['BASE_URL']
     alerts_page.open_url(f"{base_url}/{config['DEMOQA']['ALERTS_URL']}")
     return alerts_page
+
+
+@pytest.fixture(scope="function")
+def frames_page(driver, config):
+    """
+    Fixture that returns a FramesPage object and navigates to its URL.
+    """
+    frames_page = FramesPage(driver)
+    base_url = config['DEMOQA']['BASE_URL']
+    frames_page.open_url(f"{base_url}/{config['DEMOQA']['FRAMES_URL']}")
+    return frames_page
+
+
+@pytest.fixture(scope="function")
+def nested_frames_page(driver, config):
+    """
+    Fixture that returns a FramesPage object and navigates to its URL.
+    """
+    nested_frames_page = NestedFramesPage(driver)
+    base_url = config['DEMOQA']['BASE_URL']
+    nested_frames_page.open_url(f"{base_url}/{config['DEMOQA']['NESTED_FRAMES_URL']}")
+    return nested_frames_page
 
 
 @pytest.fixture(scope="function")
