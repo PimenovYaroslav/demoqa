@@ -201,3 +201,20 @@ class BasePage:
         """
         return self.driver.current_url
 
+    def accept_alert(self):
+        """Accepts (clicks OK on) a standard alert."""
+        WebDriverWait(self.driver, 10).until(EC.alert_is_present())
+        self.driver.switch_to.alert.accept()
+
+    def dismiss_alert(self):
+        """Dismisses (clicks Cancel on) a confirm or standard alert."""
+        WebDriverWait(self.driver, 10).until(EC.alert_is_present())
+        self.driver.switch_to.alert.dismiss()
+
+    def send_keys_to_alert(self, keys: str):
+        """Sends keys to a prompt alert and accepts it."""
+        WebDriverWait(self.driver, 10).until(EC.alert_is_present())
+        alert = self.driver.switch_to.alert
+        alert.send_keys(keys)
+        alert.accept()
+

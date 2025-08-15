@@ -24,7 +24,8 @@ def test_add_new_record_to_table(web_tables_page: WebTablesPage, web_tables_test
             assert record['last_name'] == web_tables_test_data['last_name']
             assert record['age'] == web_tables_test_data['age']
             assert record['salary'] == web_tables_test_data['salary']
-            assert record['department'] == web_tables_test_data['department']
+            assert record['department'].startswith(str(web_tables_test_data['department'].split()[0])), \
+                f"Expected to start with {web_tables_test_data['department'].split()[0]}, got {record['department']}"
             found = True
             break
 

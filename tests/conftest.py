@@ -7,6 +7,8 @@ from selenium import webdriver
 from faker import Faker
 import random
 import os
+
+from pages.alerts_page import AlertsPage
 from pages.broken_links_page import BrokenLinksPage
 from pages.browser_windows_page import BrowserWindowsPage
 from pages.buttons_page import ButtonsPage
@@ -202,6 +204,17 @@ def browser_windows_page(driver, config):
     base_url = config['DEMOQA']['BASE_URL']
     browser_windows_page.open_url(f"{base_url}/{config['DEMOQA']['BROWSER_WINDOWS_URL']}")
     return browser_windows_page
+
+
+@pytest.fixture(scope="function")
+def alerts_page(driver, config):
+    """
+    Fixture that returns a AlertsPage object and navigates to its URL.
+    """
+    alerts_page = AlertsPage(driver)
+    base_url = config['DEMOQA']['BASE_URL']
+    alerts_page.open_url(f"{base_url}/{config['DEMOQA']['ALERTS_URL']}")
+    return alerts_page
 
 
 @pytest.fixture(scope="function")
