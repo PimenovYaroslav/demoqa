@@ -136,6 +136,17 @@ class BasePage:
         except TimeoutException:
             return False
 
+    def wait_for_invisibility(self, locator: tuple[str, str], timeout: int = 5) -> bool:
+        """
+        Waits for an element to become invisible and returns True if successful.
+        """
+        try:
+            WebDriverWait(self.driver, timeout).until(EC.invisibility_of_element_located(locator))
+            return True
+        except TimeoutException:
+            print(f"[Timeout] Element {locator} is still visible after {timeout} seconds")
+            return False
+
     def get_element_text(self, locator: Tuple[str, str]) -> str:
         """
         Finds an element and returns its text.
@@ -217,4 +228,3 @@ class BasePage:
         alert = self.driver.switch_to.alert
         alert.send_keys(keys)
         alert.accept()
-

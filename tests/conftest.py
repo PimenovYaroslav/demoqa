@@ -8,6 +8,7 @@ from faker import Faker
 import random
 import os
 
+from pages.accordion_page import AccordionPage
 from pages.alerts_page import AlertsPage
 from pages.broken_links_page import BrokenLinksPage
 from pages.browser_windows_page import BrowserWindowsPage
@@ -254,6 +255,17 @@ def modal_dialogs_page(driver, config):
 
 
 @pytest.fixture(scope="function")
+def accordion_page(driver, config):
+    """
+    Fixture that returns a FramesPage object and navigates to its URL.
+    """
+    accordion_page = AccordionPage(driver)
+    base_url = config['DEMOQA']['BASE_URL']
+    accordion_page.open_url(f"{base_url}/{config['DEMOQA']['ACCORDIAN_URL']}")
+    return accordion_page
+
+
+@pytest.fixture(scope="function")
 def test_data():
     """
     Fixture that generates fake data using the Faker library.
@@ -313,7 +325,7 @@ def generated_form_data():
     selected_hobbies = random.sample(hobbies_list, random.randint(1, len(hobbies_list)))
     selected_hobbies.sort()
 
-    file_path = os.path.join(os.path.dirname(__file__), '..', 'sample_picture.png')
+    file_path = os.path.join(os.path.dirname(__file__), '..', 'project_logo.png')
     file_to_upload = file_path if os.path.exists(file_path) else None
     if not file_to_upload:
         print(f"\nWarning: The file '{file_path}' does not exist. Skipping picture upload.")
