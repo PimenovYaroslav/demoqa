@@ -136,6 +136,17 @@ class BasePage:
         except TimeoutException:
             return False
 
+    def wait_for_visibility_of_element(self, locator: tuple[str, str], timeout: int = None):
+        """
+        Explicitly waits for an element to become visible on the page.
+        This is useful for elements that appear dynamically.
+        :param locator: A tuple (By.ID, "id_name").
+        :param timeout: Optional timeout in seconds for this specific wait.
+                        If not provided, uses the default timeout.
+        """
+        wait_for_this = WebDriverWait(self.driver, timeout) if timeout else self.wait
+        wait_for_this.until(EC.visibility_of_element_located(locator))
+
     def wait_for_invisibility(self, locator: tuple[str, str], timeout: int = 5) -> bool:
         """
         Waits for an element to become invisible and returns True if successful.

@@ -10,6 +10,7 @@ import os
 
 from pages.accordion_page import AccordionPage
 from pages.alerts_page import AlertsPage
+from pages.auto_complete_page import AutoCompletePage
 from pages.broken_links_page import BrokenLinksPage
 from pages.browser_windows_page import BrowserWindowsPage
 from pages.buttons_page import ButtonsPage
@@ -235,7 +236,7 @@ def frames_page(driver, config):
 @pytest.fixture(scope="function")
 def nested_frames_page(driver, config):
     """
-    Fixture that returns a FramesPage object and navigates to its URL.
+    Fixture that returns a NestedFramesPage object and navigates to its URL.
     """
     nested_frames_page = NestedFramesPage(driver)
     base_url = config['DEMOQA']['BASE_URL']
@@ -246,7 +247,7 @@ def nested_frames_page(driver, config):
 @pytest.fixture(scope="function")
 def modal_dialogs_page(driver, config):
     """
-    Fixture that returns a FramesPage object and navigates to its URL.
+    Fixture that returns a ModalDialogsPage object and navigates to its URL.
     """
     modal_dialogs_page = ModalDialogsPage(driver)
     base_url = config['DEMOQA']['BASE_URL']
@@ -257,12 +258,23 @@ def modal_dialogs_page(driver, config):
 @pytest.fixture(scope="function")
 def accordion_page(driver, config):
     """
-    Fixture that returns a FramesPage object and navigates to its URL.
+    Fixture that returns a AccordionPage object and navigates to its URL.
     """
     accordion_page = AccordionPage(driver)
     base_url = config['DEMOQA']['BASE_URL']
     accordion_page.open_url(f"{base_url}/{config['DEMOQA']['ACCORDIAN_URL']}")
     return accordion_page
+
+
+@pytest.fixture(scope="function")
+def auto_complete_page(driver, config):
+    """
+    Fixture that returns a AutoCompletePage object and navigates to its URL.
+    """
+    auto_complete_page = AutoCompletePage(driver)
+    base_url = config['DEMOQA']['BASE_URL']
+    auto_complete_page.open_url(f"{base_url}/{config['DEMOQA']['AUTO_COMPLETE_URL']}")
+    return auto_complete_page
 
 
 @pytest.fixture(scope="function")
