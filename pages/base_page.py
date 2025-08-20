@@ -82,6 +82,15 @@ class BasePage:
         except TimeoutException:
             raise TimeoutException(f"Element with locator {locator} was not found within the specified time.")
 
+    def get_element_value(self, locator: tuple[str, str]) -> str:
+        """
+        Retrieves the 'value' attribute of an element.
+        This method is useful for input fields (like <input>) where the text
+        is stored in the `value` attribute.
+        """
+        element = self.find_element(locator)
+        return element.get_attribute("value")
+
     def scroll_to_element(self, locator: Tuple[str, str]):
         """
         Scrolls the element into the viewport using JavaScript.
@@ -135,6 +144,7 @@ class BasePage:
             return True
         except TimeoutException:
             return False
+
 
     def wait_for_visibility_of_element(self, locator: tuple[str, str], timeout: int = None):
         """

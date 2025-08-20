@@ -7,7 +7,7 @@ from selenium import webdriver
 from faker import Faker
 import random
 import os
-
+from datetime import datetime
 from pages.accordion_page import AccordionPage
 from pages.alerts_page import AlertsPage
 from pages.auto_complete_page import AutoCompletePage
@@ -15,6 +15,7 @@ from pages.broken_links_page import BrokenLinksPage
 from pages.browser_windows_page import BrowserWindowsPage
 from pages.buttons_page import ButtonsPage
 from pages.check_box_page import CheckBoxPage
+from pages.date_picker_page import DatePickerPage
 from pages.dynamic_properties_page import DynamicPropertiesPage
 from pages.elements_page import ElementsPage
 from pages.frames_page import FramesPage
@@ -278,6 +279,17 @@ def auto_complete_page(driver, config):
 
 
 @pytest.fixture(scope="function")
+def date_picker_page(driver, config):
+    """
+    Fixture that returns a DatePickerPage object and navigates to its URL.
+    """
+    date_picker_page = DatePickerPage(driver)
+    base_url = config['DEMOQA']['BASE_URL']
+    date_picker_page.open_url(f"{base_url}/{config['DEMOQA']['DATE_PICKER_URL']}")
+    return date_picker_page
+
+
+@pytest.fixture(scope="function")
 def test_data():
     """
     Fixture that generates fake data using the Faker library.
@@ -358,4 +370,43 @@ def generated_form_data():
         "state": random_state,
         "city": random_city,
         "file_to_upload": file_to_upload
+    }
+
+
+@pytest.fixture
+def random_date_time_data():
+    """
+    pytest fixture to generate and return a dictionary with random date and time data.
+    This fixture ensures consistency and reusability of random test data.
+    """
+    # Define lists for random month, year, and a valid day range
+    MONTHS = ["January", "February", "March", "April", "May", "June",
+              "July", "August", "September", "October", "November", "December"]
+
+    # Generate times in 24-hour format (e.g., "09:30")
+    TIMES_24H = [f"{hour:02}:{minute:02}" for hour in range(0, 24) for minute in [0, 30]]
+
+    # Generate random data
+    random_year = str(random.randint(2020, 2030))
+    random_month = random.choice(MONTHS)
+    random_day = str(random.randint(1, 28)).zfill(2) # Using 1-28 to avoid month-specific day issues
+    random_time_24h = random.choice(TIMES_24H)
+
+    # Convert 24-hour time to 12-hour format for assertion (e.g., "3:00 PM")
+    time_object = datetime.strptime(random_time_24h, "%H:%M")
+    time_str = time_object.strftime("%I:%M %p")
+
+    if time_str.startswith('0'):
+        expected_time_12h = time_str[1:]
+    else:
+        expected_time_12h = time_str
+
+
+    # Return a dictionary with all the generated and processed data
+    return {
+        "year": random_year,
+        "month": random_month,
+        "day": random_day,
+        "time_24h": random_time_24h,
+        "expected_time_12h": expected_time_12h
     }
