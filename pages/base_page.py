@@ -82,6 +82,16 @@ class BasePage:
         except TimeoutException:
             raise TimeoutException(f"Element with locator {locator} was not found within the specified time.")
 
+    def wait_for_element_value_to_be_updated(self, locator: Tuple[str, str], target_value: str, timeout: int = 10):
+        """
+        Explicitly waits for an element's 'value' attribute to be updated
+        to the specified target value.
+        """
+        wait = WebDriverWait(self.driver, timeout)
+        wait.until(EC.text_to_be_present_in_element_value(
+            locator, target_value
+        ))
+
     def get_element_value(self, locator: tuple[str, str]) -> str:
         """
         Retrieves the 'value' attribute of an element.
@@ -144,7 +154,6 @@ class BasePage:
             return True
         except TimeoutException:
             return False
-
 
     def wait_for_visibility_of_element(self, locator: tuple[str, str], timeout: int = None):
         """

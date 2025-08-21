@@ -24,6 +24,7 @@ from pages.links_page import LinksPage
 from pages.modal_dialogs_page import ModalDialogsPage
 from pages.nested_frames_page import NestedFramesPage
 from pages.radio_button_page import RadioButtonPage
+from pages.slider_page import SliderPage
 from pages.text_box_page import TextBoxPage
 from pages.upload_download_page import UploadDownloadPage
 from pages.web_tables_page import WebTablesPage
@@ -290,6 +291,17 @@ def date_picker_page(driver, config):
 
 
 @pytest.fixture(scope="function")
+def slider_page(driver, config):
+    """
+    Fixture that returns a SliderPage object and navigates to its URL.
+    """
+    slider_page = SliderPage(driver)
+    base_url = config['DEMOQA']['BASE_URL']
+    slider_page.open_url(f"{base_url}/{config['DEMOQA']['SLIDER_URL']}")
+    return slider_page
+
+
+@pytest.fixture(scope="function")
 def test_data():
     """
     Fixture that generates fake data using the Faker library.
@@ -389,7 +401,7 @@ def random_date_time_data():
     # Generate random data
     random_year = str(random.randint(2020, 2030))
     random_month = random.choice(MONTHS)
-    random_day = str(random.randint(1, 28)).zfill(2) # Using 1-28 to avoid month-specific day issues
+    random_day = str(random.randint(1, 28)).zfill(2)  # Using 1-28 to avoid month-specific day issues
     random_time_24h = random.choice(TIMES_24H)
 
     # Convert 24-hour time to 12-hour format for assertion (e.g., "3:00 PM")
@@ -400,7 +412,6 @@ def random_date_time_data():
         expected_time_12h = time_str[1:]
     else:
         expected_time_12h = time_str
-
 
     # Return a dictionary with all the generated and processed data
     return {
