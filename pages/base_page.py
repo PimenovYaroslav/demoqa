@@ -1,8 +1,9 @@
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.remote.webelement import WebElement
-from typing import Tuple, List
+from typing import Tuple, List, Callable
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
 
@@ -91,6 +92,31 @@ class BasePage:
         wait.until(EC.text_to_be_present_in_element_value(
             locator, target_value
         ))
+
+    def wait_for_text_in_element(self, locator: Tuple[str, str], text: str, timeout: int = 10):
+        """
+        Waits for the specified text to appear in an element.
+        :param locator: A tuple containing the (By strategy, locator string).
+        :param text: The text to wait for.
+        :param timeout: Maximum time to wait in seconds.
+        """
+        try:
+            WebDriverWait(self.driver, timeout).until(EC.text_to_be_present_in_element(locator, text))
+        except TimeoutException:
+            raise TimeoutException(
+                f"Text '{text}' did not appear in the element with locator {locator} within {timeout} seconds."
+            )
+
+    def wait_for_custom_condition(self, condition: Callable[[WebDriver], bool], timeout: int = 10):
+        """
+        Waits until a specific condition, defined by a callable, is met.
+        :param condition: A function that takes the driver and returns True/False.
+        :param timeout: Maximum time to wait in seconds.
+        """
+        try:
+            WebDriverWait(self.driver, timeout).until(condition)
+        except TimeoutException:
+            raise TimeoutException(f"The condition was not met within {timeout} seconds.")
 
     def get_element_value(self, locator: tuple[str, str]) -> str:
         """

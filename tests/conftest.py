@@ -23,6 +23,7 @@ from pages.home_page import HomePage
 from pages.links_page import LinksPage
 from pages.modal_dialogs_page import ModalDialogsPage
 from pages.nested_frames_page import NestedFramesPage
+from pages.progress_bar_page import ProgressBarPage
 from pages.radio_button_page import RadioButtonPage
 from pages.slider_page import SliderPage
 from pages.text_box_page import TextBoxPage
@@ -299,6 +300,17 @@ def slider_page(driver, config):
     base_url = config['DEMOQA']['BASE_URL']
     slider_page.open_url(f"{base_url}/{config['DEMOQA']['SLIDER_URL']}")
     return slider_page
+
+
+@pytest.fixture(scope="function")
+def progress_bar_page(driver, config):
+    """
+    Fixture that returns a ProgressBarPage object and navigates to its URL.
+    """
+    progress_bar_page = ProgressBarPage(driver)
+    base_url = config['DEMOQA']['BASE_URL']
+    progress_bar_page.open_url(f"{base_url}/{config['DEMOQA']['PROGRES_BAR_URL']}")
+    return progress_bar_page
 
 
 @pytest.fixture(scope="function")
