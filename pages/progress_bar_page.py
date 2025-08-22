@@ -33,7 +33,7 @@ class ProgressBarPage(BasePage):
         Returns the current progress value from the progress bar.
         Example: "75%" returns 75.
         """
-        progress_text = self.find_element(self.PROGRESS_BAR).text
+        progress_text = self.get_element_text(self.PROGRESS_BAR)
         return int(progress_text.strip('%'))
 
     def wait_for_completion(self, timeout: int = 20):

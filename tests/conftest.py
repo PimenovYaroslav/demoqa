@@ -26,6 +26,7 @@ from pages.nested_frames_page import NestedFramesPage
 from pages.progress_bar_page import ProgressBarPage
 from pages.radio_button_page import RadioButtonPage
 from pages.slider_page import SliderPage
+from pages.tabs_page import TabsPage
 from pages.text_box_page import TextBoxPage
 from pages.upload_download_page import UploadDownloadPage
 from pages.web_tables_page import WebTablesPage
@@ -311,6 +312,17 @@ def progress_bar_page(driver, config):
     base_url = config['DEMOQA']['BASE_URL']
     progress_bar_page.open_url(f"{base_url}/{config['DEMOQA']['PROGRES_BAR_URL']}")
     return progress_bar_page
+
+
+@pytest.fixture(scope="function")
+def tabs_page(driver, config):
+    """
+    Fixture that returns a TabsPage object and navigates to its URL.
+    """
+    tabs_page = TabsPage(driver)
+    base_url = config['DEMOQA']['BASE_URL']
+    tabs_page.open_url(f"{base_url}/{config['DEMOQA']['TABS_URL']}")
+    return tabs_page
 
 
 @pytest.fixture(scope="function")
